@@ -14,3 +14,16 @@ pub mod blueshift_anchor_vault {
 
 #[derive(Accounts)]
 pub struct Initialize {}
+
+#[derive(Accounts)]
+pub struct VaultAction<'info> {
+    #[account(mut)]
+    signer: Signer<'info>,
+    #[account(
+        mut,
+        seeds = [b"vault", signer.key().as_ref()],
+        bump
+    )]
+    vault: SystemAccount<'info>,
+    system_program: Program<'info, System>,
+}
