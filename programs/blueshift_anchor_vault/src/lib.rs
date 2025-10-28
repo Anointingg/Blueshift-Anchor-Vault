@@ -27,3 +27,12 @@ pub struct VaultAction<'info> {
     vault: SystemAccount<'info>,
     system_program: Program<'info, System>,
 }
+
+#[error_code]
+pub enum VaultError {
+    #[msg("invalid amount")]
+    InvalidAmount,
+
+    #[msg("vault already exist")]
+    VaultAlreadyExist
+}
