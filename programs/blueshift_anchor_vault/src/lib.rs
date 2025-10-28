@@ -43,6 +43,23 @@ pub mod blueshift_anchor_vault {
 
     pub fn withdraw(ctx: Context<VaultAction>) -> Result<()> {
         // withdraw logic
+        require_neq!(ctx.accounts.vault.lamports(), 0, VaultError::InvalidAmount);
+
+        let signer = ctx.accounts.signer.key();
+        let signer_seeds = &[b"vault", signer.as_ref(), &[ctx.bumps.vault]];
+
+        transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.system_program.to_account_info(),
+                Transfer {
+                    from: ctx.accounts.vault.to_account_info(),
+                    to: ctx.accounts.signer.to_account_info(),
+                },
+                &[&signer_seeds[..]],
+            ),
+            ctx.accounts.vault.lamports(),
+        )?;
+
         Ok(())
     }
 }
